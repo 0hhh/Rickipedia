@@ -1,0 +1,6 @@
+# 🧪 Rickipedia: The Unofficial Rick & Morty Encyclopedia
+
+rickipedia/
+│── app.py               # Main Streamlit app
+│── requirements.txt     # Python dependencies
+│── README.md            # Project instructions
