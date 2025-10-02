@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import random
 import re
 
 # ==============================================================================
@@ -38,7 +39,7 @@ def toggle_theme():
 def api_get(endpoint: str, params: dict | None = None):
     """Generic cached GET to the Rick & Morty API."""
     url = BASE + endpoint
-    r = requests.get(url, params=params, timeout=20)
+    r = requests.get(url, params=params, timeout=60) # Increased timeout to 60 seconds
     if r.status_code == 200:
         return r.json()
     # Bubble up structured error for display
@@ -59,7 +60,7 @@ def fetch_multiple(urls: list[str], limit: int = 8):
     bulk_url = BASE + f"{endpoint}/{','.join(ids_to_fetch)}"
     
     try:
-        r = requests.get(bulk_url, timeout=20)
+        r = requests.get(bulk_url, timeout=60) # Increased timeout to 60 seconds
         if r.status_code == 200:
             result = r.json()
             # API returns a dict for a single ID, list for multiple IDs
@@ -126,10 +127,13 @@ def pager_controls(info: dict, current_page_key: str, key_prefix: str = "pg"):
         st.markdown(f"<p style='text-align:center; color:var(--text)'>**Page:** {current_page} of {total_pages} &bull; **Total Items:** {info.get('count','?')}</p>", unsafe_allow_html=True)
 
     with cols[2]:
+        # Wrapping in a dedicated div to force right alignment via CSS (FIX)
+        st.markdown('<div class="next-btn-wrapper-fix">', unsafe_allow_html=True)
         # Next button logic
         if st.button("Next →", disabled=(current_page >= total_pages), key=f"{key_prefix}-next"):
             st.session_state[current_page_key] = min(total_pages, current_page + 1)
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_character_card(char: dict):
@@ -596,6 +600,18 @@ div:has(> .stButton > button:contains("View Details")) > button:hover {{
     box-shadow: 0 6px 15px rgba(0,0,0,0.35);
 }}
 
+/* New rule to align 'Next' button to the right (Fix for Misalignment) */
+/* Targets the column container holding the 'Next' button */
+div.next-btn-wrapper-fix {{
+    display: flex;
+    justify-content: flex-end;
+    /* FIX: Force the button container itself to span full column width and align content right */
+    width: 100%;
+}}
+.next-btn-wrapper-fix .stButton > button {{
+    display: inline-block; /* Ensure button doesn't take full width here */
+}}
+
 
 /* Theme Toggle Button Style */
 .theme-toggle-wrapper .stButton > button {{
@@ -667,9 +683,7 @@ with tabs[2]:
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; font-size: 1.1em; color: var(--muted); padding-top: 10px;">
-    .𖥔 ݁ ˖🔫.𖥔.👴🏼🥼.˖.👽.˖🥒.𖥔 📟݁ ˖🪐.𖥔. 🛸.˖.𖥔<br>
-    <br>🌑🌒🌓🌔🌕
-            <br>
+    .𖥔 ݁ ˖🔫.𖥔.🥼.˖.👽.˖🥒.𖥔 ݁ ˖🪐.𖥔. 🛸.˖.𖥔<br>
     Made with♥️
 </div>
 """, unsafe_allow_html=True)
