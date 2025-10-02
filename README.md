@@ -3,8 +3,10 @@
 
 Rickipedia is a modern, responsive web application built with Streamlit and Python, serving as a comprehensive encyclopedia for the universe of Rick and Morty. It allows users to search, filter, and browse characters, episodes, and locations using data sourced directly from the Rick and Morty API.
 
----
+**Live Demo:**  
+👉 [Check out the hosted app here!](https://rickipedia.streamlit.app/)
 
+---
 ## ✨ Features
 
 - **Character Directory:** Browse hundreds of characters with filtering options for status (Alive, Dead, Unknown), species, and gender.
